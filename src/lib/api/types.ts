@@ -13,17 +13,22 @@ export type TransactionDTO = {
   createdAt: string;
 };
 
-// reports-service
-export type ReportHistoryDTO = {
+// reports-service (geração assíncrona via RabbitMQ)
+export type ReportStatus = "REQUESTED" | "READY" | "FAILED";
+
+export type ReportDTO = {
   id: string;
+  status: ReportStatus;
   fileName: string;
   format: "XLSX";
   periodStart: string | null;
   periodEnd: string | null;
   periodDescription: string;
-  totalIncome: number;
-  totalExpense: number;
-  balance: number;       // receitas − despesas
-  entryCount: number;
-  generatedAt: string;
+  totalIncome: number | null;
+  totalExpense: number | null;
+  balance: number | null;   // receitas − despesas (null enquanto REQUESTED)
+  entryCount: number | null;
+  failureReason: string | null;
+  requestedAt: string;
+  completedAt: string | null;
 };

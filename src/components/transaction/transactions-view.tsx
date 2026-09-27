@@ -34,6 +34,7 @@ import { cn } from '@/lib/utils'
 import { NewTransactionModal } from '@/components/transaction/new-transaction-modal'
 import { useTransactions } from '@/components/transaction/transactions-context'
 import { ExportReportDialog } from '@/components/report/export-report-dialog'
+import { DeleteTransactionButton } from '@/components/transaction/delete-transaction-button'
 
 const typeConfig: Record<TransactionType, { label: string; icon: typeof ArrowUpRight; className: string }> = {
   INCOME: { label: 'Receita', icon: ArrowUpRight, className: 'bg-success/15 text-success' },
@@ -59,7 +60,7 @@ function monthLabel(yearMonth: string) {
 }
 
 export function TransactionsView() {
-  const { transactions, loading, error } = useTransactions()
+  const { transactions, loading, error, reload } = useTransactions()
   const [search, setSearch] = useState('')
   const [typeFilter, setTypeFilter] = useState('todos')
   const [categoryFilter, setCategoryFilter] = useState('todas')
@@ -258,6 +259,15 @@ export function TransactionsView() {
                     </div>
                   ))}
                 </dl>
+                <Separator />
+                <DeleteTransactionButton
+                  key={selected.id}
+                  id={selected.id}
+                  onDeleted={() => {
+                    setSelected(null)
+                    void reload()
+                  }}
+                />
               </div>
             </>
           )}

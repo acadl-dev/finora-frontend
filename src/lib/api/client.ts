@@ -59,6 +59,8 @@ export const apiClient = {
     apiFetch<T>(path, { ...options, method: "GET" }),
   post: <T>(path: string, body: unknown, options?: FetchOptions) =>
     apiFetch<T>(path, { ...options, method: "POST", body: JSON.stringify(body) }),
+  delete: <T>(path: string, options?: FetchOptions) =>
+    apiFetch<T>(path, { ...options, method: "DELETE" }),
   download: (path: string, options?: FetchOptions) =>
     apiFetchRaw(path, { ...options, method: "GET" }),
   // put, delete...
