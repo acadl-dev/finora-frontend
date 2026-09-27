@@ -1,36 +1,39 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Finora — Front-end
 
-## Getting Started
+[![CI/CD frontend](https://github.com/acadl-dev/finora-frontend/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/acadl-dev/finora-frontend/actions/workflows/ci-cd.yml)
 
-First, run the development server:
+Interface web do Finora (controle financeiro pessoal) em Next.js 16 + React 19 + Tailwind.
+Conversa apenas com o **gateway-service** do [backend](https://github.com/acadl-dev/finora-backend),
+por meio das rotas `/api/*` do próprio Next (o token JWT fica em cookie httpOnly).
+
+## Desenvolvimento
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+cp .env.example .env.local     # API_BASE_URL=http://localhost:8080 (gateway)
+npm run dev                    # http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+| Script | Faz |
+|---|---|
+| `npm run lint` | ESLint |
+| `npm run typecheck` | Checagem de tipos (TypeScript) |
+| `npm test` | Testes unitários (Vitest) |
+| `npm run build` | Build de produção (`output: "standalone"`) |
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Produção (Docker / Kubernetes)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+docker build -t ghcr.io/acadl-dev/finora-frontend:local .
+docker run -p 3000:3000 -e API_BASE_URL=http://host.docker.internal:8080 ghcr.io/acadl-dev/finora-frontend:local
+```
 
-## Learn More
+- `API_BASE_URL` é lido em tempo de execução (a mesma imagem serve para qualquer ambiente).
+- Health check: `GET /api/health` → `{"status":"UP"}` (usado pelos probes do Kubernetes).
+- No Kubernetes, o front é implantado pelos manifests do backend (`deploy/k8s/frontend`) e
+  acessado em http://localhost:3000. Ver `docs/implantacao.md` no repositório do backend.
 
-To learn more about Next.js, take a look at the following resources:
+## CI/CD
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+`.github/workflows/ci-cd.yml`: a cada push/PR roda lint, tipos, testes e build; na `main` (ou
+tag `v*`) publica a imagem `ghcr.io/acadl-dev/finora-frontend` no GitHub Container Registry.

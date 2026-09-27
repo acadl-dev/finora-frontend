@@ -1,0 +1,7 @@
+# Normaliza o fim de linha no repositório (LF), independentemente do sistema operacional.
+# Evita que arquivos apareçam como "modificados" só porque o Windows trocou LF por CRLF.
+* text=auto eol=lf
+*.png binary
+*.jpg binary
+*.ico binary
+*.woff2 binary
