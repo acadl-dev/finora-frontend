@@ -1,0 +1,11 @@
+node_modules
+.next
+.git
+.github
+coverage
+*.tsbuildinfo
+# segredos e configuração local nunca entram na imagem
+.env
+.env.*
+Dockerfile
+.dockerignore
