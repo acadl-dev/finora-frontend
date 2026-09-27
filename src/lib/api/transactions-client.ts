@@ -51,3 +51,16 @@ export async function listTransactions(): Promise<Result<TransactionDTO[]>> {
     };
   }
 }
+
+export async function deleteTransaction(id: string): Promise<Result<null>> {
+  try {
+    const response = await fetch(`/api/transactions/${encodeURIComponent(id)}`, { method: "DELETE" });
+    if (!response.ok) {
+      const result = await response.json().catch(() => null);
+      return { success: false, error: result?.error ?? "Não foi possível excluir a transação." };
+    }
+    return { success: true, data: null };
+  } catch {
+    return { success: false, error: "Erro de conexão. Verifique sua internet e tente novamente." };
+  }
+}

@@ -8,6 +8,12 @@ export function handleReportsError(error: unknown, context: string) {
     if (error.status === 401 || error.status === 403) {
       return NextResponse.json({ error: "Sessão expirada. Faça login novamente." }, { status: 401 });
     }
+    if (error.status === 404) {
+      return NextResponse.json({ error: body?.error ?? "Relatório não encontrado" }, { status: 404 });
+    }
+    if (error.status === 409) {
+      return NextResponse.json({ error: body?.error ?? "O relatório ainda não está pronto" }, { status: 409 });
+    }
     if (error.status === 400) {
       return NextResponse.json({ error: body?.error ?? "Parâmetros inválidos" }, { status: 400 });
     }

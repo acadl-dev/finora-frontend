@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { apiClient } from "@/lib/api/client";
-import type { ReportHistoryDTO } from "@/lib/api/types";
+import type { ReportDTO } from "@/lib/api/types";
 import { getAccessToken } from "@/lib/auth/session";
 import { handleReportsError } from "../_errors";
 
@@ -11,7 +11,7 @@ export async function GET() {
   }
 
   try {
-    const data = await apiClient.get<ReportHistoryDTO[]>("/reports/history", { token, cache: "no-store" });
+    const data = await apiClient.get<ReportDTO[]>("/reports/history", { token, cache: "no-store" });
     return NextResponse.json(data);
   } catch (error) {
     return handleReportsError(error, "Erro ao listar histórico de relatórios:");
